@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Share } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
@@ -8,13 +8,17 @@ import { ConfirmModal } from '../components/ConfirmModal';
 import { useApp } from '../context/AppContext';
 
 export const SettingsScreen = ({ navigation }) => {
-  const { strings, language, setLanguage, businessProfile } = useApp();
+  const { strings, language, businessProfile, currentUser, logoutUser } = useApp();
   const [backupModalVisible, setBackupModalVisible] = useState(false);
 
-  const handleToggleLanguage = () => {
-    const nextLang = language === 'en' ? 'ur' : 'en';
-    setLanguage(nextLang);
-    Alert.alert('Language Updated', `Switched to ${nextLang === 'ur' ? 'اردو' : 'English'}`);
+  const handleShareShopCode = async () => {
+    try {
+      await Share.share({
+        message: `Join our shop "${businessProfile.name}" on Business Manager app!\nUse Business Code: *${businessProfile.code}*\nOwner: ${businessProfile.ownerName || businessProfile.name}`,
+      });
+    } catch (e) {
+      console.log('Share error', e);
+    }
   };
 
   const handleExportPDF = () => {
@@ -22,6 +26,20 @@ export const SettingsScreen = ({ navigation }) => {
   };
 
   const settingsList = [
+    {
+      id: 'wa-sync',
+      title: 'WhatsApp Business Sync',
+      subtitle: 'Cloud API & smart paste WhatsApp orders',
+      icon: 'logo-whatsapp',
+      onPress: () => navigation.navigate('WhatsAppSync'),
+    },
+    {
+      id: 'biz-setup',
+      title: 'Switch / Setup Business',
+      subtitle: `${businessProfile?.name || 'Setup Business'} ${businessProfile?.code ? `(Code: ${businessProfile.code})` : ''}`,
+      icon: 'storefront-outline',
+      onPress: () => navigation.navigate('BusinessSetup'),
+    },
     {
       id: 'inv',
       title: strings.inventory,
@@ -37,18 +55,11 @@ export const SettingsScreen = ({ navigation }) => {
       onPress: () => navigation.navigate('Reports'),
     },
     {
-      id: 'biz',
-      title: strings.businessProfile,
-      subtitle: `${businessProfile.name} • ${businessProfile.phone}`,
-      icon: 'business-outline',
-      onPress: () => Alert.alert('Profile', `${businessProfile.name}\n${businessProfile.phone}`),
-    },
-    {
       id: 'lang',
       title: strings.language,
-      subtitle: language === 'en' ? 'English (Tap to switch)' : 'اردو (Urdu)',
+      subtitle: `${language.toUpperCase()} (Tap to choose from 6 languages)`,
       icon: 'language-outline',
-      onPress: handleToggleLanguage,
+      onPress: () => navigation.navigate('LanguageSelect'),
     },
     {
       id: 'curr',
@@ -74,9 +85,31 @@ export const SettingsScreen = ({ navigation }) => {
     {
       id: 'about',
       title: strings.aboutApp,
-      subtitle: 'Business Manager v1.0.0',
+      subtitle: 'Business Manager v1.2.0',
       icon: 'information-circle-outline',
-      onPress: () => Alert.alert('Business Manager', 'Designed for local Pakistani businesses.\nVersion 1.0.0'),
+      onPress: () => Alert.alert('Business Manager', 'Designed for local Pakistani businesses.\nVersion 1.2.0'),
+    },
+    {
+      id: 'logout',
+      title: 'Log Out',
+      subtitle: currentUser?.phone ? `Signed in as ${currentUser.phone}` : 'Sign out of this device',
+      icon: 'log-out-outline',
+      onPress: () => {
+        Alert.alert('Log Out', 'Are you sure you want to log out?', [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Log Out',
+            style: 'destructive',
+            onPress: () => {
+              logoutUser();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
+            },
+          },
+        ]);
+      },
     },
   ];
 
@@ -89,6 +122,36 @@ export const SettingsScreen = ({ navigation }) => {
       />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        {/* Business & Owner Info Banner */}
+        <View style={styles.businessCard}>
+          <View style={styles.bizHeaderRow}>
+            <View style={styles.bizIconBadge}>
+              <Ionicons name="storefront" size={26} color="#FFFFFF" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.bizName}>{businessProfile?.name || 'My Business'}</Text>
+              <Text style={styles.bizSub}>{businessProfile?.category || 'Retail Store'}{businessProfile?.address ? ` • ${businessProfile.address}` : ''}</Text>
+            </View>
+          </View>
+
+          {/* Shop Code & Share */}
+          <View style={styles.codeRow}>
+            <View>
+              <Text style={styles.codeLabel}>SHOP INVITE CODE</Text>
+              <Text style={styles.codeValue}>{businessProfile?.code || 'NOT SET'}</Text>
+            </View>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={handleShareShopCode}
+              style={styles.shareCodeBtn}
+            >
+              <Ionicons name="share-social-outline" size={16} color={colors.primary} />
+              <Text style={styles.shareCodeBtnText}>Share Code</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Settings Menu List */}
         <View style={styles.card}>
           {settingsList.map((item, index) => (
             <TouchableOpacity
@@ -115,7 +178,7 @@ export const SettingsScreen = ({ navigation }) => {
         </View>
       </ScrollView>
 
-      {/* Reusable ConfirmModal Example */}
+      {/* Reusable ConfirmModal */}
       <ConfirmModal
         visible={backupModalVisible}
         title="Backup Business Data"
@@ -138,6 +201,73 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: spacing.xl,
+  },
+  businessCard: {
+    backgroundColor: colors.primary,
+    borderRadius: spacing.cardRadius,
+    padding: spacing.xl,
+    marginBottom: spacing.xl,
+    elevation: 3,
+  },
+  bizHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  bizIconBadge: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  bizName: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  bizSub: {
+    fontSize: 12,
+    color: '#A7F3D0',
+    marginTop: 2,
+  },
+  codeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  codeLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#A7F3D0',
+    letterSpacing: 1,
+  },
+  codeValue: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: 1.5,
+    marginTop: 2,
+  },
+  shareCodeBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  shareCodeBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.primary,
+    marginLeft: 4,
   },
   card: {
     backgroundColor: colors.surface,

@@ -23,7 +23,7 @@ export const DashboardScreen = ({ navigation }: { navigation: any }) => {
         <View style={styles.header}>
           <View>
             <Text style={styles.greetingText}>{strings.goodMorning}</Text>
-            <Text style={styles.businessName}>{businessProfile.name}</Text>
+            <Text style={styles.businessName}>{businessProfile?.name || 'My Business'}</Text>
           </View>
           <TouchableOpacity
             activeOpacity={0.8}
@@ -66,7 +66,7 @@ export const DashboardScreen = ({ navigation }: { navigation: any }) => {
             <View style={[styles.statIconBadge, { backgroundColor: '#E0F2FE' }]}>
               <Ionicons name="receipt-outline" size={18} color="#0284C7" />
             </View>
-            <Text style={styles.statValue}>{totalOrdersCount + 21}</Text>
+            <Text style={styles.statValue}>{totalOrdersCount}</Text>
             <Text style={styles.statTitle}>{strings.ordersCount}</Text>
           </TouchableOpacity>
 
@@ -79,7 +79,7 @@ export const DashboardScreen = ({ navigation }: { navigation: any }) => {
             <View style={[styles.statIconBadge, { backgroundColor: '#FEF3C7' }]}>
               <Ionicons name="time-outline" size={18} color="#D97706" />
             </View>
-            <Text style={styles.statValue}>0{pendingOrdersCount + 7}</Text>
+            <Text style={styles.statValue}>{pendingOrdersCount.toString().padStart(2, '0')}</Text>
             <Text style={styles.statTitle}>{strings.pendingCount}</Text>
           </TouchableOpacity>
 
@@ -141,25 +141,34 @@ export const DashboardScreen = ({ navigation }: { navigation: any }) => {
         </View>
 
         {/* Orders list snippet */}
-        {orders.slice(0, 3).map((order) => (
-          <TouchableOpacity
-            key={order.id}
-            activeOpacity={0.8}
-            onPress={() => navigation.navigate('OrderDetail', { order })}
-            style={styles.orderCard}
-          >
-            <View style={styles.orderLeft}>
-              <Text style={styles.orderNum}>{order.orderNumber}</Text>
-              <Text style={styles.orderCustomer}>{order.customerName}</Text>
-              <Text style={styles.orderDate}>{order.date}</Text>
-            </View>
+        {orders.length === 0 ? (
+          <View style={{ paddingVertical: 24, alignItems: 'center' }}>
+            <Ionicons name="receipt-outline" size={36} color={THEME.colors.textLight} />
+            <Text style={{ marginTop: 8, color: THEME.colors.textSecondary, fontSize: 14 }}>
+              No orders yet. Tap "+ Add Order" to create one.
+            </Text>
+          </View>
+        ) : (
+          orders.slice(0, 3).map((order) => (
+            <TouchableOpacity
+              key={order.id}
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('OrderDetail', { order })}
+              style={styles.orderCard}
+            >
+              <View style={styles.orderLeft}>
+                <Text style={styles.orderNum}>{order.orderNumber}</Text>
+                <Text style={styles.orderCustomer}>{order.customerName}</Text>
+                <Text style={styles.orderDate}>{order.date}</Text>
+              </View>
 
-            <View style={styles.orderRight}>
-              <Text style={styles.orderAmount}>Rs. {order.totalAmount.toLocaleString()}</Text>
-              <StatusBadge status={order.status} />
-            </View>
-          </TouchableOpacity>
-        ))}
+              <View style={styles.orderRight}>
+                <Text style={styles.orderAmount}>Rs. {order.totalAmount.toLocaleString()}</Text>
+                <StatusBadge status={order.status} />
+              </View>
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
     </View>
   );

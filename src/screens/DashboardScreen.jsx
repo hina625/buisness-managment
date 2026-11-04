@@ -29,7 +29,7 @@ export const DashboardScreen = ({ navigation }) => {
         <View style={styles.header}>
           <View>
             <Text style={styles.greetingText}>{strings.goodMorning}</Text>
-            <Text style={styles.businessName}>{businessProfile.name}</Text>
+            <Text style={styles.businessName}>{businessProfile?.name || 'My Business'}</Text>
           </View>
           <TouchableOpacity
             activeOpacity={0.8}
@@ -52,7 +52,7 @@ export const DashboardScreen = ({ navigation }) => {
         <View style={styles.metricsRow}>
           <StatCard
             title={strings.ordersCount}
-            value={totalOrdersCount + 21}
+            value={totalOrdersCount}
             icon="receipt-outline"
             iconColor="#0284C7"
             iconBgColor="#E0F2FE"
@@ -60,7 +60,7 @@ export const DashboardScreen = ({ navigation }) => {
           />
           <StatCard
             title={strings.pendingCount}
-            value={`0${pendingOrdersCount + 7}`}
+            value={pendingOrdersCount.toString().padStart(2, '0')}
             icon="time-outline"
             iconColor="#D97706"
             iconBgColor="#FEF3C7"
@@ -106,13 +106,22 @@ export const DashboardScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {orders.slice(0, 3).map((order) => (
-          <OrderCard
-            key={order.id}
-            order={order}
-            onPress={() => navigation.navigate('OrderDetail', { order })}
-          />
-        ))}
+        {orders.length === 0 ? (
+          <View style={{ paddingVertical: 24, alignItems: 'center' }}>
+            <Ionicons name="receipt-outline" size={36} color={colors.textLight} />
+            <Text style={{ marginTop: 8, color: colors.textSecondary, fontSize: 14 }}>
+              No orders yet. Tap "+ Add Order" to create one.
+            </Text>
+          </View>
+        ) : (
+          orders.slice(0, 3).map((order) => (
+            <OrderCard
+              key={order.id}
+              order={order}
+              onPress={() => navigation.navigate('OrderDetail', { order })}
+            />
+          ))
+        )}
       </ScrollView>
     </View>
   );

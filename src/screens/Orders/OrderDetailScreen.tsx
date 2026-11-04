@@ -22,7 +22,7 @@ export const OrderDetailScreen = ({ route, navigation }: { route: any; navigatio
   };
 
   const handleShareReceipt = async () => {
-    const receiptText = `*${businessProfile.name} - Receipt*\n` +
+    const receiptText = `*${businessProfile?.name || 'Business'} - Receipt*\n` +
       `Order: ${currentOrder.orderNumber}\n` +
       `Customer: ${currentOrder.customerName}\n` +
       `Phone: ${currentOrder.customerPhone}\n\n` +

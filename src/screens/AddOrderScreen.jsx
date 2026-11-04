@@ -1,33 +1,68 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Modal, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { AppHeader } from '../components/AppHeader';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { useApp } from '../context/AppContext';
+import { parseWhatsAppOrderText } from '../utils/whatsappParser';
 
 export const AddOrderScreen = ({ navigation }) => {
-  const { strings, customers, products, addOrder } = useApp();
+  const { strings, customers, products, addOrder, addCustomer } = useApp();
 
   const [selectedCustomerId, setSelectedCustomerId] = useState(
     customers.length > 0 ? customers[0].id : ''
   );
+  const [waModalVisible, setWaModalVisible] = useState(false);
+  const [waText, setWaText] = useState('');
 
-  const [orderItems, setOrderItems] = useState([
-    {
-      productId: products[0]?.id || 'p1',
-      name: products[0]?.name || 'Wireless Mouse',
-      price: products[0]?.price || 1800,
-      quantity: 1,
-    },
-  ]);
+  const [orderItems, setOrderItems] = useState(
+    products.length > 0
+      ? [
+          {
+            productId: products[0].id,
+            name: products[0].name,
+            price: products[0].price,
+            quantity: 1,
+          },
+        ]
+      : []
+  );
 
   const [deliveryCharges, setDeliveryCharges] = useState(100);
   const [paymentMethod, setPaymentMethod] = useState('Cash');
 
   const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const totalAmount = subtotal + deliveryCharges;
+
+  const handleApplyWhatsAppText = () => {
+    if (!waText.trim()) {
+      Alert.alert('Required', 'Please paste the WhatsApp order text.');
+      return;
+    }
+    const parsed = parseWhatsAppOrderText(waText, products);
+    if (!parsed) {
+      Alert.alert('Error', 'Could not parse text.');
+      return;
+    }
+
+    // Customer setup
+    let cust = customers.find((c) => c.phone.includes(parsed.customerPhone.slice(-7)));
+    if (!cust) {
+      cust = addCustomer(parsed.customerName, parsed.customerPhone, 0);
+    }
+    setSelectedCustomerId(cust.id);
+
+    // Items setup
+    if (parsed.items && parsed.items.length > 0) {
+      setOrderItems(parsed.items);
+    }
+
+    setWaModalVisible(false);
+    setWaText('');
+    Alert.alert('Success', 'WhatsApp order details applied to form!');
+  };
 
   const handleAddProduct = () => {
     const unselected = products.find(
@@ -91,6 +126,24 @@ export const AddOrderScreen = ({ navigation }) => {
       />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        {/* WhatsApp Smart Paste Quick Banner */}
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => setWaModalVisible(true)}
+          style={styles.waSmartBanner}
+        >
+          <View style={styles.waSmartBannerLeft}>
+            <View style={styles.waBannerIcon}>
+              <Ionicons name="logo-whatsapp" size={20} color="#FFFFFF" />
+            </View>
+            <View>
+              <Text style={styles.waBannerTitle}>Paste WhatsApp Order</Text>
+              <Text style={styles.waBannerSub}>Auto-fill customer & items from message</Text>
+            </View>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color="#059669" />
+        </TouchableOpacity>
+
         {/* Customer Select */}
         <Text style={styles.sectionLabel}>{strings.selectCustomer}</Text>
         <View style={styles.customerChipsRow}>
@@ -192,6 +245,48 @@ export const AddOrderScreen = ({ navigation }) => {
       <View style={styles.footer}>
         <PrimaryButton title={strings.saveOrder} onPress={handleSaveOrder} />
       </View>
+
+      {/* WhatsApp Smart Paste Modal */}
+      <Modal visible={waModalVisible} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeaderRow}>
+              <View style={styles.waModalIcon}>
+                <Ionicons name="logo-whatsapp" size={20} color="#FFFFFF" />
+              </View>
+              <Text style={styles.modalTitle}>Paste WhatsApp Order</Text>
+            </View>
+
+            <Text style={styles.modalSub}>
+              WhatsApp se copy kiya hua message yahan paste karein:
+            </Text>
+
+            <TextInput
+              style={styles.modalTextArea}
+              multiline
+              numberOfLines={5}
+              placeholder="e.g. 2x Wireless Mouse, Name: Ali Khan, Phone: 03001234567"
+              value={waText}
+              onChangeText={setWaText}
+              placeholderTextColor="#9CA3AF"
+            />
+
+            <View style={styles.modalBtnRow}>
+              <PrimaryButton
+                title="Cancel"
+                variant="outline"
+                style={{ flex: 1, marginRight: spacing.sm }}
+                onPress={() => setWaModalVisible(false)}
+              />
+              <PrimaryButton
+                title="Auto Fill"
+                style={{ flex: 1, marginLeft: spacing.sm }}
+                onPress={handleApplyWhatsAppText}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -377,5 +472,90 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderTopWidth: 1,
     borderTopColor: colors.borderLight,
+  },
+  waSmartBanner: {
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1.5,
+    borderColor: '#A7F3D0',
+    borderRadius: spacing.cardRadius,
+    padding: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.lg,
+  },
+  waSmartBannerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  waBannerIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#25D366',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  waBannerTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#065F46',
+  },
+  waBannerSub: {
+    fontSize: 11,
+    color: '#047857',
+    marginTop: 2,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    padding: spacing.xl,
+  },
+  modalContent: {
+    backgroundColor: colors.surface,
+    borderRadius: spacing.cardRadius,
+    padding: spacing.xl,
+    elevation: 6,
+  },
+  modalHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  waModalIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#25D366',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: colors.textPrimary,
+  },
+  modalSub: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    marginBottom: 12,
+    lineHeight: 18,
+  },
+  modalTextArea: {
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    borderRadius: spacing.cardRadius,
+    padding: 12,
+    minHeight: 100,
+    fontSize: 14,
+    color: colors.textPrimary,
+    textAlignVertical: 'top',
+    marginBottom: 16,
+  },
+  modalBtnRow: {
+    flexDirection: 'row',
   },
 });

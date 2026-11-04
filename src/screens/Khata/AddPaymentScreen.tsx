@@ -11,7 +11,7 @@ export const AddPaymentScreen = ({ navigation }: { navigation: any }) => {
   const [selectedCustomerId, setSelectedCustomerId] = useState(
     customers.length > 0 ? customers[0].id : ''
   );
-  const [amount, setAmount] = useState('1000');
+  const [amount, setAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('Cash');
 
   const handleSave = () => {

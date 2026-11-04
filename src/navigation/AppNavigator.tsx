@@ -12,6 +12,8 @@ import { SplashScreen } from '../screens/SplashOnboarding/SplashScreen';
 import { OnboardingScreen } from '../screens/SplashOnboarding/OnboardingScreen';
 import { LanguageSelectScreen } from '../screens/SplashOnboarding/LanguageSelectScreen';
 import { LoginScreen } from '../screens/SplashOnboarding/LoginScreen';
+import { SignupScreen } from '../screens/SplashOnboarding/SignupScreen';
+import { BusinessSetupScreen } from '../screens/SplashOnboarding/BusinessSetupScreen';
 
 // Core Screens
 import { DashboardScreen } from '../screens/DashboardScreen';
@@ -25,6 +27,7 @@ import { AddPaymentScreen } from '../screens/Khata/AddPaymentScreen';
 import { InventoryScreen } from '../screens/InventoryScreen';
 import { ReportsScreen } from '../screens/ReportsScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { WhatsAppSyncScreen } from '../screens/WhatsAppSyncScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -121,6 +124,8 @@ export const AppNavigator = () => {
         <Stack.Screen name="Onboarding" component={OnboardingScreen} />
         <Stack.Screen name="LanguageSelect" component={LanguageSelectScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Signup" component={SignupScreen} />
+        <Stack.Screen name="BusinessSetup" component={BusinessSetupScreen} />
         <Stack.Screen name="MainTabs" component={MainTabNavigator} />
         
         {/* Detail Screens */}
@@ -131,6 +136,7 @@ export const AppNavigator = () => {
         <Stack.Screen name="Inventory" component={InventoryScreen} />
         <Stack.Screen name="Reports" component={ReportsScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="WhatsAppSync" component={WhatsAppSyncScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,82 +1,99 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { THEME } from '../../constants/theme';
 import { CustomButton } from '../../components/CustomButton';
 import { useApp } from '../../context/AppContext';
+import { Language } from '../../types';
+
+interface LangOption {
+  id: Language;
+  title: string;
+  nativeTitle: string;
+  flag: string;
+  sub: string;
+}
+
+const LANGUAGES: LangOption[] = [
+  { id: 'en', title: 'English', nativeTitle: 'English', flag: '🇬🇧', sub: 'Default' },
+  { id: 'ur', title: 'Urdu', nativeTitle: 'اردو', flag: '🇵🇰', sub: 'قومی زبان' },
+  { id: 'pa', title: 'Punjabi', nativeTitle: 'پنجابی', flag: '🌾', sub: 'پنجاب' },
+  { id: 'sd', title: 'Sindhi', nativeTitle: 'سنڌي', flag: '🏺', sub: 'سنڌ' },
+  { id: 'ps', title: 'Pashto', nativeTitle: 'پښتو', flag: '⛰️', sub: 'خیبر پختونخوا' },
+  { id: 'ar', title: 'Arabic', nativeTitle: 'العربية', flag: '🇸🇦', sub: 'الشرق الأوسط' },
+];
 
 export const LanguageSelectScreen = ({ navigation }: { navigation: any }) => {
   const { language, setLanguage, strings } = useApp();
+  const [search, setSearch] = useState('');
+
+  const filtered = LANGUAGES.filter(
+    (l) =>
+      l.title.toLowerCase().includes(search.toLowerCase()) ||
+      l.nativeTitle.includes(search)
+  );
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
+      <View style={styles.headerArea}>
         <View style={styles.iconCircle}>
-          <Ionicons name="globe-outline" size={48} color={THEME.colors.primary} />
+          <Ionicons name="globe-outline" size={40} color={THEME.colors.primary} />
         </View>
-
         <Text style={styles.title}>{strings.selectLanguage}</Text>
         <Text style={styles.subtitle}>{strings.chooseLanguageSub}</Text>
 
-        {/* English option */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => setLanguage('en')}
-          style={[
-            styles.optionCard,
-            language === 'en' && styles.selectedOptionCard,
-          ]}
-        >
-          <View style={styles.row}>
-            <Ionicons
-              name="language-outline"
-              size={24}
-              color={language === 'en' ? THEME.colors.primary : '#6B7280'}
-            />
-            <Text
-              style={[
-                styles.optionText,
-                language === 'en' && styles.selectedOptionText,
-              ]}
-            >
-              English
-            </Text>
-          </View>
-          {language === 'en' && (
-            <Ionicons name="checkmark-circle" size={24} color={THEME.colors.primary} />
-          )}
-        </TouchableOpacity>
-
-        {/* Urdu option */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => setLanguage('ur')}
-          style={[
-            styles.optionCard,
-            language === 'ur' && styles.selectedOptionCard,
-          ]}
-        >
-          <View style={styles.row}>
-            <Ionicons
-              name="globe-outline"
-              size={24}
-              color={language === 'ur' ? THEME.colors.primary : '#6B7280'}
-            />
-            <Text
-              style={[
-                styles.optionText,
-                styles.urduFont,
-                language === 'ur' && styles.selectedOptionText,
-              ]}
-            >
-              اردو (Urdu)
-            </Text>
-          </View>
-          {language === 'ur' && (
-            <Ionicons name="checkmark-circle" size={24} color={THEME.colors.primary} />
-          )}
-        </TouchableOpacity>
+        {/* Quick Search */}
+        <View style={styles.searchBar}>
+          <Ionicons name="search" size={18} color="#9CA3AF" style={{ marginRight: 8 }} />
+          <TextInput
+            placeholder="Search language..."
+            value={search}
+            onChangeText={setSearch}
+            placeholderTextColor="#9CA3AF"
+            style={styles.searchInput}
+          />
+        </View>
       </View>
+
+      <ScrollView contentContainerStyle={styles.langList} showsVerticalScrollIndicator={false}>
+        {filtered.map((item) => {
+          const isSelected = language === item.id;
+          return (
+            <TouchableOpacity
+              key={item.id}
+              activeOpacity={0.8}
+              onPress={() => setLanguage(item.id)}
+              style={[
+                styles.optionCard,
+                isSelected && styles.selectedOptionCard,
+              ]}
+            >
+              <View style={styles.leftRow}>
+                <Text style={styles.flagIcon}>{item.flag}</Text>
+                <View>
+                  <Text style={[styles.nativeText, isSelected && styles.selectedText]}>
+                    {item.nativeTitle}
+                  </Text>
+                  <Text style={styles.englishText}>
+                    {item.title} • {item.sub}
+                  </Text>
+                </View>
+              </View>
+
+              <View
+                style={[
+                  styles.checkCircle,
+                  isSelected && styles.selectedCheckCircle,
+                ]}
+              >
+                {isSelected ? (
+                  <Ionicons name="checkmark" size={16} color="#FFFFFF" />
+                ) : null}
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
 
       <View style={styles.footer}>
         <CustomButton
@@ -92,71 +109,108 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: 24,
-    paddingTop: 80,
-    paddingBottom: 40,
-    justifyContent: 'space-between',
+    paddingTop: 54,
   },
-  content: {
-    flex: 1,
+  headerArea: {
     alignItems: 'center',
-    paddingTop: 20,
+    paddingHorizontal: 20,
+    marginBottom: 10,
   },
   iconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 24,
+    width: 68,
+    height: 68,
+    borderRadius: 22,
     backgroundColor: THEME.colors.primaryLight,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 12,
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '800',
     color: '#111827',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   subtitle: {
-    fontSize: 15,
+    fontSize: 14,
     color: THEME.colors.textSecondary,
-    marginBottom: 36,
+    marginBottom: 16,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F9FAFB',
+    borderRadius: THEME.metrics.cardRadius,
+    paddingHorizontal: 14,
+    height: 44,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    width: '100%',
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: '#111827',
+  },
+  langList: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 20,
   },
   optionCard: {
-    width: '100%',
-    height: 64,
-    borderRadius: THEME.metrics.cardRadius,
-    borderWidth: 1.5,
-    borderColor: '#E5E7EB',
-    backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginBottom: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: THEME.metrics.cardRadius,
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    marginBottom: 12,
   },
   selectedOptionCard: {
     borderColor: THEME.colors.primary,
     backgroundColor: THEME.colors.primaryLight,
   },
-  row: {
+  leftRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  optionText: {
+  flagIcon: {
+    fontSize: 26,
+    marginRight: 14,
+  },
+  nativeText: {
     fontSize: 17,
-    fontWeight: '600',
-    color: '#374151',
-    marginLeft: 14,
-  },
-  selectedOptionText: {
-    color: THEME.colors.primary,
     fontWeight: '700',
+    color: '#111827',
   },
-  urduFont: {
-    fontSize: 18,
+  englishText: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginTop: 2,
+  },
+  selectedText: {
+    color: THEME.colors.primary,
+  },
+  checkCircle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#D1D5DB',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedCheckCircle: {
+    backgroundColor: THEME.colors.primary,
+    borderColor: THEME.colors.primary,
   },
   footer: {
-    width: '100%',
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
+    backgroundColor: '#FFFFFF',
   },
 });

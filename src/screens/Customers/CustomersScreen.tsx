@@ -12,6 +12,7 @@ export const CustomersScreen = ({ navigation }: { navigation: any }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [newCustName, setNewCustName] = useState('');
   const [newCustPhone, setNewCustPhone] = useState('');
+  const [openingDue, setOpeningDue] = useState('');
 
   const filteredCustomers = customers.filter(
     (c) =>
@@ -24,9 +25,11 @@ export const CustomersScreen = ({ navigation }: { navigation: any }) => {
       Alert.alert('Error', 'Please fill name and phone number');
       return;
     }
-    addCustomer(newCustName.trim(), newCustPhone.trim());
+    const dueAmount = parseFloat(openingDue) || 0;
+    addCustomer(newCustName.trim(), newCustPhone.trim(), dueAmount);
     setNewCustName('');
     setNewCustPhone('');
+    setOpeningDue('');
     setModalVisible(false);
   };
 
@@ -110,6 +113,16 @@ export const CustomersScreen = ({ navigation }: { navigation: any }) => {
               value={newCustPhone}
               onChangeText={setNewCustPhone}
               keyboardType="phone-pad"
+              placeholderTextColor="#9CA3AF"
+            />
+
+            <Text style={styles.inputLabel}>Opening Balance / Pehle ka Udhaar (Optional)</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="e.g. 5000"
+              value={openingDue}
+              onChangeText={setOpeningDue}
+              keyboardType="numeric"
               placeholderTextColor="#9CA3AF"
             />
 

@@ -1,8 +1,30 @@
-export type Language = 'en' | 'ur';
+export type Language = 'en' | 'ur' | 'sd' | 'ps' | 'pa' | 'ar';
 
 export type PaymentMethod = 'Cash' | 'Easypaisa' | 'JazzCash' | 'Bank';
 
 export type OrderStatus = 'Pending' | 'Delivered' | 'Cancelled';
+
+export type UserRole = 'Owner' | 'Manager' | 'Staff';
+
+export interface User {
+  id: string;
+  name: string;
+  phone: string;
+  role: UserRole;
+  businessId?: string;
+}
+
+export interface BusinessProfile {
+  id: string;
+  name: string;
+  code: string; // Unique business code e.g. AZHAR-786 for staff to join
+  ownerId: string;
+  ownerName: string;
+  phone: string;
+  currency: string;
+  category: string;
+  address?: string;
+}
 
 export interface Product {
   id: string;
@@ -50,11 +72,4 @@ export interface Payment {
   paymentMethod: PaymentMethod;
   date: string;
   orderId?: string;
-}
-
-export interface BusinessProfile {
-  name: string;
-  phone: string;
-  currency: string;
-  address?: string;
 }

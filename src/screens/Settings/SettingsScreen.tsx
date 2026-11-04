@@ -25,9 +25,9 @@ export const SettingsScreen = ({ navigation }: { navigation: any }) => {
     {
       id: 'biz',
       title: strings.businessProfile,
-      subtitle: `${businessProfile.name} • ${businessProfile.phone}`,
+      subtitle: `${businessProfile?.name || 'My Business'}${businessProfile?.phone ? ` • ${businessProfile.phone}` : ''}`,
       icon: 'business-outline',
-      onPress: () => Alert.alert('Profile', `${businessProfile.name}\n${businessProfile.phone}`),
+      onPress: () => Alert.alert('Profile', `${businessProfile?.name || 'My Business'}\n${businessProfile?.phone || ''}`),
     },
     {
       id: 'lang',

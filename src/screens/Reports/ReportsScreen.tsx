@@ -5,17 +5,44 @@ import { THEME } from '../../constants/theme';
 import { useApp } from '../../context/AppContext';
 
 export const ReportsScreen = ({ navigation }: { navigation: any }) => {
-  const { strings, products } = useApp();
+  const { strings, products, orders } = useApp();
   const [filter, setFilter] = useState<'Daily' | 'Weekly' | 'Monthly'>('Weekly');
 
+  // Real Dynamic revenue
+  const totalRevenue = orders
+    .filter((o) => o.status !== 'Cancelled')
+    .reduce((sum, o) => sum + o.totalAmount, 0);
+
+  // Map product sales from real orders
+  const productSalesMap: { [key: string]: { count: number; revenue: number } } = {};
+  orders.forEach((o) => {
+    if (o.status !== 'Cancelled') {
+      o.items.forEach((item) => {
+        if (!productSalesMap[item.productId]) {
+          productSalesMap[item.productId] = { count: 0, revenue: 0 };
+        }
+        productSalesMap[item.productId].count += item.quantity;
+        productSalesMap[item.productId].revenue += item.price * item.quantity;
+      });
+    }
+  });
+
+  const rankedProducts = products
+    .map((p) => ({
+      ...p,
+      soldCount: productSalesMap[p.id]?.count || 0,
+      totalSalesRevenue: productSalesMap[p.id]?.revenue || 0,
+    }))
+    .sort((a, b) => b.totalSalesRevenue - a.totalSalesRevenue);
+
   const daysData = [
-    { day: 'Mon', value: 35 },
-    { day: 'Tue', value: 50 },
-    { day: 'Wed', value: 45 },
-    { day: 'Thu', value: 70 },
-    { day: 'Fri', value: 85 },
-    { day: 'Sat', value: 100 },
-    { day: 'Sun', value: 65 },
+    { day: 'Mon', value: 0 },
+    { day: 'Tue', value: 0 },
+    { day: 'Wed', value: 0 },
+    { day: 'Thu', value: 0 },
+    { day: 'Fri', value: 0 },
+    { day: 'Sat', value: 0 },
+    { day: 'Sun', value: 0 },
   ];
 
   return (
@@ -58,10 +85,10 @@ export const ReportsScreen = ({ navigation }: { navigation: any }) => {
         {/* Total Sales Big Banner */}
         <View style={styles.totalSalesCard}>
           <Text style={styles.totalSalesLabel}>Total Sales</Text>
-          <Text style={styles.totalSalesAmount}>Rs. 98,500</Text>
+          <Text style={styles.totalSalesAmount}>Rs. {totalRevenue.toLocaleString()}</Text>
           <View style={styles.badgeRow}>
             <Ionicons name="arrow-up" size={14} color="#10B981" />
-            <Text style={styles.badgeText}>18% growth this period</Text>
+            <Text style={styles.badgeText}>Real dynamic calculation</Text>
           </View>
         </View>
 
@@ -74,7 +101,7 @@ export const ReportsScreen = ({ navigation }: { navigation: any }) => {
                 <View
                   style={[
                     styles.barFill,
-                    { height: `${d.value}%` },
+                    { height: `${Math.max(d.value, 4)}%` },
                     d.value === 100 && styles.barMax,
                   ]}
                 />
@@ -92,22 +119,30 @@ export const ReportsScreen = ({ navigation }: { navigation: any }) => {
           </TouchableOpacity>
         </View>
 
-        {products.map((p, index) => (
-          <View key={p.id} style={styles.productRow}>
-            <View style={styles.rankBadge}>
-              <Text style={styles.rankNum}>#{index + 1}</Text>
-            </View>
-            <View style={styles.prodDetails}>
-              <Text style={styles.prodName}>{p.name}</Text>
-              <Text style={styles.prodSales}>
-                {28 - index * 6} orders completed
-              </Text>
-            </View>
-            <Text style={styles.prodRevenue}>
-              Rs. {(p.price * (28 - index * 6)).toLocaleString()}
+        {rankedProducts.length === 0 ? (
+          <View style={{ paddingVertical: 20, alignItems: 'center' }}>
+            <Text style={{ color: THEME.colors.textSecondary, fontSize: 13 }}>
+              No products found. Add products in the Inventory tab.
             </Text>
           </View>
-        ))}
+        ) : (
+          rankedProducts.map((p, index) => (
+            <View key={p.id} style={styles.productRow}>
+              <View style={styles.rankBadge}>
+                <Text style={styles.rankNum}>#{index + 1}</Text>
+              </View>
+              <View style={styles.prodDetails}>
+                <Text style={styles.prodName}>{p.name}</Text>
+                <Text style={styles.prodSales}>
+                  {p.soldCount} orders completed
+                </Text>
+              </View>
+              <Text style={styles.prodRevenue}>
+                Rs. {p.totalSalesRevenue.toLocaleString()}
+              </Text>
+            </View>
+          ))
+        )}
       </ScrollView>
     </View>
   );

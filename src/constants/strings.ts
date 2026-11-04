@@ -1,210 +1,303 @@
-export const STRINGS = {
-  en: {
-    // App info
-    appName: 'Business Manager',
-    tagline: 'Manage Orders. Track Payments. Grow Your Business.',
-    yourBusinessPriority: 'Your Business Our Priority',
-    
-    // Onboarding
-    onboardingTitle: 'Grow Your Business with Smart Tools',
-    onboardingSub: 'Manage orders, track sales, recover khata, and more with effortless tracking.',
-    getStarted: 'Get Started',
-    
-    // Language
-    selectLanguage: 'Select Language',
-    chooseLanguageSub: 'Choose your preferred language',
-    continue: 'Continue',
-    english: 'English',
-    urdu: 'اردو (Urdu)',
-    
-    // Auth
-    welcomeBack: 'Welcome Back',
-    loginContinue: 'Login to continue your business growth',
-    phonePlaceholder: '+92 300 1234567',
-    sendOtp: 'Send OTP',
-    continueWithGoogle: 'Continue with Google',
-    
-    // Tabs & Navigation
-    home: 'Home',
-    orders: 'Orders',
-    customers: 'Customers',
-    khata: 'Khata',
-    more: 'More',
-    
-    // Dashboard
-    goodMorning: 'Good Morning!',
-    todaySales: "Today's Sales",
-    fromYesterday: '+ 12% from yesterday',
-    ordersCount: 'Orders',
-    pendingCount: 'Pending',
-    dueCount: 'Total Due',
-    addOrder: '+ Add Order',
-    addCustomer: '+ Add Customer',
-    addPayment: '+ Add Payment',
-    recentOrders: 'Recent Orders',
-    viewAll: 'View All',
-    
-    // Orders
-    searchOrders: 'Search orders by # or customer...',
-    tabAll: 'All',
-    tabPending: 'Pending',
-    tabDelivered: 'Delivered',
-    tabCancelled: 'Cancelled',
-    newOrder: 'New Order',
-    selectCustomer: 'Select Customer',
-    products: 'Products',
-    addProduct: '+ Add Product',
-    subtotal: 'Subtotal',
-    deliveryCharges: 'Delivery Charges',
-    totalAmount: 'Total Amount',
-    paymentMethod: 'Payment Method',
-    saveOrder: 'Save Order',
-    
-    // Order Detail
-    orderDetails: 'Order Details',
-    items: 'Items',
-    updateStatus: 'Update Status',
-    shareReceipt: 'Share Receipt (WhatsApp)',
-    markDelivered: 'Mark as Delivered',
-    
-    // Customers
-    searchCustomers: 'Search customers by name/phone...',
-    customerProfile: 'Customer Profile',
-    totalOrdersLabel: 'Orders',
-    paymentsTab: 'Payments',
-    
-    // Khata / Payments
-    khataTitle: 'Khata / Ledger',
-    totalReceived: 'Total Received',
-    totalDueLabel: 'Total Due (Udhaar)',
-    recentPayments: 'Recent Payments',
-    savePayment: 'Save Payment',
-    amount: 'Amount (PKR)',
-    
-    // Inventory
-    inventory: 'Inventory & Stock',
-    searchProducts: 'Search products...',
-    stock: 'Stock',
-    
-    // Reports
-    reports: 'Reports & Analytics',
-    daily: 'Daily',
-    weekly: 'Weekly',
-    monthly: 'Monthly',
-    topProducts: 'Top Selling Products',
-    
-    // Settings
-    settings: 'Settings',
-    businessProfile: 'Business Profile',
-    language: 'Language',
-    currency: 'Currency (PKR)',
-    backupRestore: 'Backup & Restore',
-    exportReports: 'Export Reports (PDF)',
-    notifications: 'Notifications',
-    aboutApp: 'About App',
-  },
-  ur: {
-    // App info
-    appName: 'بزنس مینیجر',
-    tagline: 'آرڈرز، ادھار اور پیمنٹس سنبھالیں باآسانی',
-    yourBusinessPriority: 'آپ کا کاروبار، ہماری ترجیح',
-    
-    // Onboarding
-    onboardingTitle: 'اپنے کاروبار کو جدید اور آسان بنائیں',
-    onboardingSub: 'آرڈرز کا ریکارڈ، روزانہ سیل اور کھاتہ سب کچھ ایک ہی جگہ',
-    getStarted: 'شروع کریں',
-    
-    // Language
-    selectLanguage: 'زبان منتخب کریں',
-    chooseLanguageSub: 'اپنی پسندیدہ زبان کا انتخاب کریں',
-    continue: 'آگے بڑھیں',
-    english: 'English',
-    urdu: 'اردو',
-    
-    // Auth
-    welcomeBack: 'خوش آمدید',
-    loginContinue: 'لاگ ان کریں اور کاروبار آگے بڑھائیں',
-    phonePlaceholder: '0300 1234567',
-    sendOtp: 'او ٹی پی حاصل کریں',
-    continueWithGoogle: 'گوگل کے ساتھ جاری رکھیں',
-    
-    // Tabs & Navigation
-    home: 'ہوم',
-    orders: 'آرڈرز',
-    customers: 'گاہک',
-    khata: 'کھاتہ',
-    more: 'مزید',
-    
-    // Dashboard
-    goodMorning: 'صبح بخیر!',
-    todaySales: 'آج کی کل سیل',
-    fromYesterday: 'کل سے 12 فیصد زیادہ',
-    ordersCount: 'آرڈرز',
-    pendingCount: 'زیر التواء',
-    dueCount: 'کل ادھار',
-    addOrder: '+ نیا آرڈر بنائیں',
-    addCustomer: '+ نیا گاہک شامل کریں',
-    addPayment: '+ رقم جمع کریں',
-    recentOrders: 'حالیہ آرڈرز',
-    viewAll: 'سب دیکھیں',
-    
-    // Orders
-    searchOrders: 'آرڈر تلاش کریں...',
-    tabAll: 'تمام',
-    tabPending: 'زیر التواء',
-    tabDelivered: 'پہنچ چکے',
-    tabCancelled: 'منسوخ شدہ',
-    newOrder: 'نیا آرڈر',
-    selectCustomer: 'گاہک کا انتخاب کریں',
-    products: 'پروڈکٹس',
-    addProduct: '+ آئٹم شامل کریں',
-    subtotal: 'سب ٹوٹل',
-    deliveryCharges: 'ڈلیوری چارجز',
-    totalAmount: 'کل رقم',
-    paymentMethod: 'طریقہ ادائیگی',
-    saveOrder: 'آرڈر محفوظ کریں',
-    
-    // Order Detail
-    orderDetails: 'آرڈر کی تفصیل',
-    items: 'سامان کی فہرست',
-    updateStatus: 'سٹیٹس تبدیل کریں',
-    shareReceipt: 'واٹس ایپ پر رسید بھیجیں',
-    markDelivered: 'ڈیلیور نشان زد کریں',
-    
-    // Customers
-    searchCustomers: 'گاہک کا نام یا فون نمبر تلاش کریں...',
-    customerProfile: 'گاہک کا کھاتہ',
-    totalOrdersLabel: 'آرڈرز',
-    paymentsTab: 'ادائیگیوں کا ریکارڈ',
-    
-    // Khata / Payments
-    khataTitle: 'کھاتہ اور وصولیاں',
-    totalReceived: 'کل موصول شدہ',
-    totalDueLabel: 'کل باقی ادھار',
-    recentPayments: 'حالیہ وصولیاں',
-    savePayment: 'رقم وصول محفوظ کریں',
-    amount: 'رقم (روپے)',
-    
-    // Inventory
-    inventory: 'اسٹاک اور انوینٹری',
-    searchProducts: 'پروڈکٹ تلاش کریں...',
-    stock: 'باقی اسٹاک',
-    
-    // Reports
-    reports: 'رپورٹس اور جائزے',
-    daily: 'روزانہ',
-    weekly: 'ہفتہ وار',
-    monthly: 'ماہانہ',
-    topProducts: 'سب سے زیادہ بکنے والے آئٹمز',
-    
-    // Settings
-    settings: 'ترتیبات (سیٹنگز)',
-    businessProfile: 'کاروباری پروفائل',
-    language: 'زبان',
-    currency: 'کرنسی (روپے)',
-    backupRestore: 'بیک اپ اور ڈیٹا بحالی',
-    exportReports: 'رپورٹ پی ڈی ایف میں نکالیں',
-    notifications: 'اطلاعات',
-    aboutApp: 'ایپ کے بارے میں',
-  },
+import { Language } from '../types';
+
+const baseEn = {
+  // App info
+  appName: 'Business Manager',
+  tagline: 'Manage Orders. Track Payments. Grow Your Business.',
+  yourBusinessPriority: 'Your Business Our Priority',
+  
+  // Onboarding
+  onboardingTitle: 'Grow Your Business with Smart Tools',
+  onboardingSub: 'Manage orders, track sales, recover khata, and more with effortless tracking.',
+  getStarted: 'Get Started',
+  
+  // Language
+  selectLanguage: 'Select Language',
+  chooseLanguageSub: 'Choose your preferred language',
+  continue: 'Continue',
+  english: 'English',
+  urdu: 'اردو (Urdu)',
+  sindhi: 'سنڌي (Sindhi)',
+  pashto: 'پښتو (Pashto)',
+  punjabi: 'پنجابی (Punjabi)',
+  arabic: 'العربية (Arabic)',
+  
+  // Auth & Signup
+  welcomeBack: 'Welcome Back',
+  loginContinue: 'Login to continue your business growth',
+  phonePlaceholder: '+92 300 1234567',
+  sendOtp: 'Send OTP',
+  continueWithGoogle: 'Continue with Google',
+  login: 'Log In',
+  signup: 'Sign Up',
+  createAccount: 'Create Account',
+  signupSub: 'Register your owner account to manage your business',
+  fullName: 'Full Name',
+  fullNamePlaceholder: 'e.g. Azhar Mehmood',
+  password: 'Password / 4-Digit PIN',
+  passwordPlaceholder: 'Enter your secure PIN',
+  alreadyHaveAccount: 'Already have an account? Log In',
+  dontHaveAccount: "Don't have an account? Sign Up",
+  
+  // Business Setup / Linking
+  setupBusiness: 'Setup Your Business',
+  setupBusinessSub: 'Connect or create your shop to start managing sales & khata',
+  createNewBusiness: 'Create New Business (Owner)',
+  joinExistingBusiness: 'Join with Shop Code (Staff/Partner)',
+  businessName: 'Business / Shop Name',
+  businessNamePlaceholder: 'e.g. Azhar Traders',
+  businessCategory: 'Business Category',
+  businessCity: 'City / Location',
+  businessCityPlaceholder: 'e.g. Lahore / Karachi',
+  businessCode: 'Business Code',
+  enterBusinessCode: 'Enter Business Code (e.g. AZHAR-786)',
+  connectAndProceed: 'Connect & Start Business',
+  businessCreatedSuccess: 'Business linked successfully!',
+  
+  // Tabs & Navigation
+  home: 'Home',
+  orders: 'Orders',
+  customers: 'Customers',
+  khata: 'Khata',
+  more: 'More',
+  
+  // Dashboard
+  goodMorning: 'Good Morning!',
+  todaySales: "Today's Sales",
+  fromYesterday: '+ 12% from yesterday',
+  ordersCount: 'Orders',
+  pendingCount: 'Pending',
+  dueCount: 'Total Due',
+  addOrder: '+ Add Order',
+  addCustomer: '+ Add Customer',
+  addPayment: '+ Add Payment',
+  recentOrders: 'Recent Orders',
+  viewAll: 'View All',
+  
+  // Orders
+  searchOrders: 'Search orders by # or customer...',
+  tabAll: 'All',
+  tabPending: 'Pending',
+  tabDelivered: 'Delivered',
+  tabCancelled: 'Cancelled',
+  newOrder: 'New Order',
+  selectCustomer: 'Select Customer',
+  products: 'Products',
+  addProduct: '+ Add Product',
+  subtotal: 'Subtotal',
+  deliveryCharges: 'Delivery Charges',
+  totalAmount: 'Total Amount',
+  paymentMethod: 'Payment Method',
+  saveOrder: 'Save Order',
+  
+  // Order Detail
+  orderDetails: 'Order Details',
+  items: 'Items',
+  updateStatus: 'Update Status',
+  shareReceipt: 'Share Receipt (WhatsApp)',
+  markDelivered: 'Mark as Delivered',
+  
+  // Customers
+  searchCustomers: 'Search customers by name/phone...',
+  customerProfile: 'Customer Profile',
+  totalOrdersLabel: 'Orders',
+  paymentsTab: 'Payments',
+  
+  // Khata / Payments
+  khataTitle: 'Khata / Ledger',
+  totalReceived: 'Total Received',
+  totalDueLabel: 'Total Due (Udhaar)',
+  recentPayments: 'Recent Payments',
+  savePayment: 'Save Payment',
+  amount: 'Amount (PKR)',
+  
+  // Inventory
+  inventory: 'Inventory & Stock',
+  searchProducts: 'Search products...',
+  stock: 'Stock',
+  
+  // Reports
+  reports: 'Reports & Analytics',
+  daily: 'Daily',
+  weekly: 'Weekly',
+  monthly: 'Monthly',
+  topProducts: 'Top Selling Products',
+  
+  // Settings
+  settings: 'Settings',
+  businessProfile: 'Business Profile',
+  language: 'Language',
+  currency: 'Currency (PKR)',
+  backupRestore: 'Backup & Restore',
+  exportReports: 'Export Reports (PDF)',
+  notifications: 'Notifications',
+  aboutApp: 'About App',
+};
+
+const baseUr: typeof baseEn = {
+  ...baseEn,
+  appName: 'بزنس مینیجر',
+  tagline: 'آرڈرز، ادھار اور پیمنٹس سنبھالیں باآسانی',
+  yourBusinessPriority: 'آپ کا کاروبار، ہماری ترجیح',
+  onboardingTitle: 'اپنے کاروبار کو جدید اور آسان بنائیں',
+  onboardingSub: 'آرڈرز کا ریکارڈ، روزانہ سیل اور کھاتہ سب کچھ ایک ہی جگہ',
+  getStarted: 'شروع کریں',
+  selectLanguage: 'زبان منتخب کریں',
+  chooseLanguageSub: 'اپنی پسندیدہ زبان کا انتخاب کریں',
+  continue: 'آگے بڑھیں',
+  
+  welcomeBack: 'خوش آمدید',
+  loginContinue: 'لاگ ان کریں اور کاروبار آگے بڑھائیں',
+  phonePlaceholder: '0300 1234567',
+  sendOtp: 'او ٹی پی حاصل کریں',
+  continueWithGoogle: 'گوگل کے ساتھ جاری رکھیں',
+  login: 'لاگ ان',
+  signup: 'سائن اپ',
+  createAccount: 'نیا اکاؤنٹ بنائیں',
+  signupSub: 'اپنے کاروبار کے لیے اونر اکاؤنٹ رجسٹر کریں',
+  fullName: 'پورا نام',
+  fullNamePlaceholder: 'مثلاً: اظہر محمود',
+  password: 'پاس ورڈ یا پن کوڈ',
+  passwordPlaceholder: '4 ہندسوں کا پن کوڈ درج کریں',
+  alreadyHaveAccount: 'پہلے سے اکاؤنٹ ہے؟ لاگ ان کریں',
+  dontHaveAccount: 'اکاؤنٹ نہیں ہے؟ سائن اپ کریں',
+  
+  setupBusiness: 'کاروبار کی تفصیلات سیٹ کریں',
+  setupBusinessSub: 'اپنی دکان یا کاروبار کو منسلک کریں تاکہ کھاتہ اور سیل شروع ہو سکے',
+  createNewBusiness: 'نیا کاروبار بنائیں (مالک / اونر)',
+  joinExistingBusiness: 'شاپ کوڈ کے ذریعے شامل ہوں (ملازم / پارٹنر)',
+  businessName: 'دکان یا کاروبار کا نام',
+  businessNamePlaceholder: 'مثلاً: اظہر ٹریڈرز',
+  businessCategory: 'کاروبار کی قسم',
+  businessCity: 'شہر یا پتہ',
+  businessCityPlaceholder: 'مثلاً: لاہور / کراچی',
+  businessCode: 'شاپ / کاروباری کوڈ',
+  enterBusinessCode: 'کاروباری کوڈ درج کریں (مثلاً: AZHAR-786)',
+  connectAndProceed: 'کاروبار جوڑیں اور شروع کریں',
+  businessCreatedSuccess: 'کاروبار کامیابی سے منسلک ہو گیا!',
+
+  home: 'ہوم',
+  orders: 'آرڈرز',
+  customers: 'گاہک',
+  khata: 'کھاتہ',
+  more: 'مزید',
+  goodMorning: 'صبح بخیر!',
+  todaySales: 'آج کی کل سیل',
+  fromYesterday: 'کل سے 12 فیصد زیادہ',
+  ordersCount: 'آرڈرز',
+  pendingCount: 'زیر التواء',
+  dueCount: 'کل ادھار',
+  addOrder: '+ نیا آرڈر بنائیں',
+  addCustomer: '+ نیا گاہک شامل کریں',
+  addPayment: '+ رقم جمع کریں',
+  recentOrders: 'حالیہ آرڈرز',
+  viewAll: 'سب دیکھیں',
+  searchOrders: 'آرڈر تلاش کریں...',
+  tabAll: 'تمام',
+  tabPending: 'زیر التواء',
+  tabDelivered: 'پہنچ چکے',
+  tabCancelled: 'منسوخ شدہ',
+  newOrder: 'نیا آرڈر',
+  selectCustomer: 'گاہک کا انتخاب کریں',
+  products: 'پروڈکٹس',
+  addProduct: '+ آئٹم شامل کریں',
+  subtotal: 'سب ٹوٹل',
+  deliveryCharges: 'ڈلیوری چارجز',
+  totalAmount: 'کل رقم',
+  paymentMethod: 'طریقہ ادائیگی',
+  saveOrder: 'آرڈر محفوظ کریں',
+  orderDetails: 'آرڈر کی تفصیل',
+  items: 'سامان کی فہرست',
+  updateStatus: 'سٹیٹس تبدیل کریں',
+  shareReceipt: 'واٹس ایپ پر رسید بھیجیں',
+  markDelivered: 'ڈیلیور نشان زد کریں',
+  searchCustomers: 'گاہک کا نام یا فون نمبر تلاش کریں...',
+  customerProfile: 'گاہک کا کھاتہ',
+  totalOrdersLabel: 'آرڈرز',
+  paymentsTab: 'ادائیگیوں کا ریکارڈ',
+  khataTitle: 'کھاتہ اور وصولیاں',
+  totalReceived: 'کل موصول شدہ',
+  totalDueLabel: 'کل باقی ادھار',
+  recentPayments: 'حالیہ وصولیاں',
+  savePayment: 'رقم وصول محفوظ کریں',
+  amount: 'رقم (روپے)',
+  inventory: 'اسٹاک اور انوینٹری',
+  searchProducts: 'پروڈکٹ تلاش کریں...',
+  stock: 'باقی اسٹاک',
+  reports: 'رپورٹس اور جائزے',
+  daily: 'روزانہ',
+  weekly: 'ہفتہ وار',
+  monthly: 'ماہانہ',
+  topProducts: 'سب سے زیادہ بکنے والے آئٹمز',
+  settings: 'ترتیبات (سیٹنگز)',
+  businessProfile: 'کاروباری پروفائل',
+  language: 'زبان',
+  currency: 'کرنسی (روپے)',
+  backupRestore: 'بیک اپ اور ڈیٹا بحالی',
+  exportReports: 'رپورٹ پی ڈی ایف میں نکالیں',
+  notifications: 'اطلاعات',
+  aboutApp: 'ایپ کے بارے میں',
+};
+
+const baseSd: typeof baseEn = {
+  ...baseUr,
+  selectLanguage: 'ٻولي چونڊيو',
+  chooseLanguageSub: 'پنهنجي پسنديده ٻولي چونڊيو',
+  continue: 'اڳتي وڌو',
+  getStarted: 'شروع ڪريو',
+  welcomeBack: 'ڀلي ڪري آيا',
+  home: 'گهر',
+  orders: 'آرڊر',
+  customers: 'گراهڪ',
+  khata: 'کاتو',
+  todaySales: 'اڄ جي وڪرو',
+  dueCount: 'باقي اڌارو',
+};
+
+const basePs: typeof baseEn = {
+  ...baseUr,
+  selectLanguage: 'ژبه وټاکئ',
+  chooseLanguageSub: 'خپله ژبه غوره کړئ',
+  continue: 'دوام ورکړئ',
+  getStarted: 'پیل کړئ',
+  welcomeBack: 'ښه راغلاست',
+  home: 'کور',
+  orders: 'فرمایشونه',
+  customers: 'پیرودونکي',
+  khata: 'حساب',
+  todaySales: 'د نن ورځې پلور',
+  dueCount: 'ټول پور',
+};
+
+const basePa: typeof baseEn = {
+  ...baseUr,
+  selectLanguage: 'بولی چݨو',
+  chooseLanguageSub: 'اپنی بولی دا انتخاب کرو',
+  continue: 'اگے چلو',
+  getStarted: 'شروع کرو',
+  welcomeBack: 'جی آیاں نوں',
+  todaySales: 'اج دی سیل',
+};
+
+const baseAr: typeof baseEn = {
+  ...baseUr,
+  selectLanguage: 'اختر اللغة',
+  chooseLanguageSub: 'اختر لغتك المفضلة',
+  continue: 'متابعة',
+  getStarted: 'ابدأ الآن',
+  welcomeBack: 'مرحباً بك',
+  home: 'الرئيسية',
+  orders: 'الطلبات',
+  customers: 'العملاء',
+  khata: 'الدفتر المالي',
+  todaySales: 'مبيعات اليوم',
+};
+
+export const STRINGS: Record<Language, typeof baseEn> = {
+  en: baseEn,
+  ur: baseUr,
+  sd: baseSd,
+  ps: basePs,
+  pa: basePa,
+  ar: baseAr,
 };

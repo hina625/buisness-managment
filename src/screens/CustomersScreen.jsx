@@ -16,6 +16,7 @@ export const CustomersScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [openingDue, setOpeningDue] = useState('');
 
   const filtered = customers.filter(
     (c) =>
@@ -28,9 +29,11 @@ export const CustomersScreen = ({ navigation }) => {
       Alert.alert('Required', 'Please enter customer name and phone number.');
       return;
     }
-    addCustomer(name.trim(), phone.trim());
+    const initialDue = parseFloat(openingDue) || 0;
+    addCustomer(name.trim(), phone.trim(), initialDue);
     setName('');
     setPhone('');
+    setOpeningDue('');
     setModalVisible(false);
   };
 
@@ -95,6 +98,15 @@ export const CustomersScreen = ({ navigation }) => {
               value={phone}
               onChangeText={setPhone}
               keyboardType="phone-pad"
+            />
+
+            <FormInput
+              label="Opening Balance / Pehle ka Udhaar (Optional)"
+              placeholder="0"
+              prefix="Rs."
+              value={openingDue}
+              onChangeText={setOpeningDue}
+              keyboardType="numeric"
             />
 
             <View style={styles.modalBtnRow}>

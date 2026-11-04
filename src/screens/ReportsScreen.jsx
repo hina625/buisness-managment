@@ -7,17 +7,44 @@ import { StatCard } from '../components/StatCard';
 import { useApp } from '../context/AppContext';
 
 export const ReportsScreen = ({ navigation }) => {
-  const { strings, products } = useApp();
+  const { strings, products, orders } = useApp();
   const [filter, setFilter] = useState('Weekly');
 
+  // Real Dynamic revenue
+  const totalRevenue = orders
+    .filter((o) => o.status !== 'Cancelled')
+    .reduce((sum, o) => sum + o.totalAmount, 0);
+
+  // Map product sales from real orders
+  const productSalesMap = {};
+  orders.forEach((o) => {
+    if (o.status !== 'Cancelled') {
+      o.items.forEach((item) => {
+        if (!productSalesMap[item.productId]) {
+          productSalesMap[item.productId] = { count: 0, revenue: 0 };
+        }
+        productSalesMap[item.productId].count += item.quantity;
+        productSalesMap[item.productId].revenue += item.price * item.quantity;
+      });
+    }
+  });
+
+  const rankedProducts = products
+    .map((p) => ({
+      ...p,
+      soldCount: productSalesMap[p.id]?.count || 0,
+      totalSalesRevenue: productSalesMap[p.id]?.revenue || 0,
+    }))
+    .sort((a, b) => b.totalSalesRevenue - a.totalSalesRevenue);
+
   const daysData = [
-    { day: 'Mon', value: 35 },
-    { day: 'Tue', value: 50 },
-    { day: 'Wed', value: 45 },
-    { day: 'Thu', value: 70 },
-    { day: 'Fri', value: 85 },
-    { day: 'Sat', value: 100 },
-    { day: 'Sun', value: 65 },
+    { day: 'Mon', value: 0 },
+    { day: 'Tue', value: 0 },
+    { day: 'Wed', value: 0 },
+    { day: 'Thu', value: 0 },
+    { day: 'Fri', value: 0 },
+    { day: 'Sat', value: 0 },
+    { day: 'Sun', value: 0 },
   ];
 
   return (
@@ -55,8 +82,8 @@ export const ReportsScreen = ({ navigation }) => {
         <StatCard
           isFeatured
           title="Total Revenue"
-          value="Rs. 98,500"
-          trend="18% growth this period"
+          value={`Rs. ${totalRevenue.toLocaleString()}`}
+          trend="Based on all recorded orders"
         />
 
         {/* Bar Chart Visual */}
@@ -68,7 +95,7 @@ export const ReportsScreen = ({ navigation }) => {
                 <View
                   style={[
                     styles.barFill,
-                    { height: `${d.value}%` },
+                    { height: `${Math.max(d.value, 4)}%` },
                     d.value === 100 && styles.barMax,
                   ]}
                 />
@@ -83,22 +110,30 @@ export const ReportsScreen = ({ navigation }) => {
           <Text style={styles.sectionTitle}>{strings.topProducts}</Text>
         </View>
 
-        {products.map((p, index) => (
-          <View key={p.id} style={styles.productRow}>
-            <View style={styles.rankBadge}>
-              <Text style={styles.rankNum}>#{index + 1}</Text>
-            </View>
-            <View style={styles.prodDetails}>
-              <Text style={styles.prodName}>{p.name}</Text>
-              <Text style={styles.prodSales}>
-                {28 - index * 6} orders completed
-              </Text>
-            </View>
-            <Text style={styles.prodRevenue}>
-              Rs. {(p.price * (28 - index * 6)).toLocaleString()}
+        {rankedProducts.length === 0 ? (
+          <View style={{ paddingVertical: 20, alignItems: 'center' }}>
+            <Text style={{ color: colors.textSecondary, fontSize: 13 }}>
+              No products found. Add products in the Inventory tab.
             </Text>
           </View>
-        ))}
+        ) : (
+          rankedProducts.map((p, index) => (
+            <View key={p.id} style={styles.productRow}>
+              <View style={styles.rankBadge}>
+                <Text style={styles.rankNum}>#{index + 1}</Text>
+              </View>
+              <View style={styles.prodDetails}>
+                <Text style={styles.prodName}>{p.name}</Text>
+                <Text style={styles.prodSales}>
+                  {p.soldCount} orders completed
+                </Text>
+              </View>
+              <Text style={styles.prodRevenue}>
+                Rs. {p.totalSalesRevenue.toLocaleString()}
+              </Text>
+            </View>
+          ))
+        )}
       </ScrollView>
     </View>
   );

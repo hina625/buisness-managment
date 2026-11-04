@@ -5,14 +5,21 @@ import { THEME } from '../../constants/theme';
 import { useApp } from '../../context/AppContext';
 
 export const SplashScreen = ({ navigation }: { navigation: any }) => {
-  const { strings } = useApp();
+  const { strings, currentUser, isReady } = useApp();
 
   useEffect(() => {
+    if (!isReady) return;
+
     const timer = setTimeout(() => {
-      navigation.replace('Onboarding');
-    }, 2000);
+      // If user info is already saved, jump straight to Dashboard
+      if (currentUser && currentUser.phone) {
+        navigation.replace('MainTabs');
+      } else {
+        navigation.replace('Onboarding');
+      }
+    }, 1500);
     return () => clearTimeout(timer);
-  }, [navigation]);
+  }, [navigation, currentUser, isReady]);
 
   return (
     <View style={styles.container}>
