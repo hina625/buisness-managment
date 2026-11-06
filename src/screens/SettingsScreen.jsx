@@ -8,7 +8,22 @@ import { ConfirmModal } from '../components/ConfirmModal';
 import { useApp } from '../context/AppContext';
 
 export const SettingsScreen = ({ navigation }) => {
-  const { strings, language, businessProfile, currentUser, logoutUser } = useApp();
+  const {
+    strings,
+    language,
+    businessProfile,
+    currentUser,
+    logoutUser,
+    exportBusinessBackup,
+    restoreBusinessBackup,
+    exportCSVReport,
+    customers,
+    orders,
+    expenses,
+    payments,
+    isOnline,
+  } = useApp();
+
   const [backupModalVisible, setBackupModalVisible] = useState(false);
 
   const handleShareShopCode = async () => {
@@ -21,8 +36,67 @@ export const SettingsScreen = ({ navigation }) => {
     }
   };
 
-  const handleExportPDF = () => {
-    Alert.alert('PDF Exported', 'Monthly sales and Khata ledger saved to Downloads.');
+  const handleExportCSV = () => {
+    Alert.alert(
+      'Export to Excel (CSV)',
+      'Choose which records you want to export as a spreadsheet CSV:',
+      [
+        {
+          text: 'Orders & Sales',
+          onPress: async () => {
+            const csv = await exportCSVReport('orders');
+            if (csv) {
+              await Share.share({ title: 'Orders_Export.csv', message: csv });
+            }
+          },
+        },
+        {
+          text: 'Customers Khata',
+          onPress: async () => {
+            const csv = await exportCSVReport('customers');
+            if (csv) {
+              await Share.share({ title: 'Customers_Khata.csv', message: csv });
+            }
+          },
+        },
+        {
+          text: 'Payments Ledger',
+          onPress: async () => {
+            const csv = await exportCSVReport('payments');
+            if (csv) {
+              await Share.share({ title: 'Payments_History.csv', message: csv });
+            }
+          },
+        },
+        { text: 'Cancel', style: 'cancel' },
+      ]
+    );
+  };
+
+  const handleFullBackup = async () => {
+    try {
+      const backup = await exportBusinessBackup();
+      const summary = `Business: ${businessProfile.name}\nOrders: ${orders.length}\nCustomers: ${customers.length}\nExpenses: ${expenses.length}\nPayments: ${payments.length}\nStatus: ${isOnline ? 'Synced to Cloud PostgreSQL' : 'Local Backup Ready'}`;
+      
+      Alert.alert(
+        'Backup Completed Successfully! ✅',
+        summary,
+        [
+          {
+            text: 'Share / Save JSON',
+            onPress: () => {
+              Share.share({
+                title: `${businessProfile.name || 'business'}_backup.json`,
+                message: JSON.stringify(backup, null, 2),
+              });
+            },
+          },
+          { text: 'Done', style: 'default' },
+        ]
+      );
+    } catch (e) {
+      Alert.alert('Backup Error', (e && e.message) || 'Could not create backup.');
+    }
   };
 
   const settingsList = [
@@ -55,6 +129,20 @@ export const SettingsScreen = ({ navigation }) => {
       onPress: () => navigation.navigate('Reports'),
     },
     {
+      id: 'csv',
+      title: 'Export to Excel / CSV',
+      subtitle: 'Download Orders, Customers, & Khata files',
+      icon: 'document-text-outline',
+      onPress: handleExportCSV,
+    },
+    {
+      id: 'backup',
+      title: 'Full Business Backup (JSON)',
+      subtitle: isOnline ? 'Synced with PostgreSQL database' : 'Saved in local offline device memory',
+      icon: 'cloud-upload-outline',
+      onPress: handleFullBackup,
+    },
+    {
       id: 'lang',
       title: strings.language,
       subtitle: `${language.toUpperCase()} (Tap to choose from 6 languages)`,
@@ -69,25 +157,11 @@ export const SettingsScreen = ({ navigation }) => {
       onPress: () => Alert.alert('Currency', 'Default currency is set to PKR (Rs.)'),
     },
     {
-      id: 'backup',
-      title: strings.backupRestore,
-      subtitle: 'Backup database to cloud',
-      icon: 'cloud-upload-outline',
-      onPress: () => setBackupModalVisible(true),
-    },
-    {
-      id: 'export',
-      title: strings.exportReports,
-      subtitle: 'Download monthly PDF report',
-      icon: 'download-outline',
-      onPress: handleExportPDF,
-    },
-    {
       id: 'about',
       title: strings.aboutApp,
-      subtitle: 'Business Manager v1.2.0',
+      subtitle: 'Business Manager v1.2.0 (PostgreSQL + Offline Ready)',
       icon: 'information-circle-outline',
-      onPress: () => Alert.alert('Business Manager', 'Designed for local Pakistani businesses.\nVersion 1.2.0'),
+      onPress: () => Alert.alert('Business Manager', 'Designed for local Pakistani businesses.\nVersion 1.2.0 with Full Offline Mode & PostgreSQL.'),
     },
     {
       id: 'logout',
@@ -167,7 +241,7 @@ export const SettingsScreen = ({ navigation }) => {
                 <View style={styles.iconBox}>
                   <Ionicons name={item.icon} size={22} color={colors.primary} />
                 </View>
-                <View>
+                <View style={{ flex: 1 }}>
                   <Text style={styles.itemTitle}>{item.title}</Text>
                   <Text style={styles.itemSubtitle}>{item.subtitle}</Text>
                 </View>
@@ -178,15 +252,15 @@ export const SettingsScreen = ({ navigation }) => {
         </View>
       </ScrollView>
 
-      {/* Reusable ConfirmModal */}
+      {/* ConfirmModal */}
       <ConfirmModal
         visible={backupModalVisible}
         title="Backup Business Data"
-        message="Do you want to sync all customers, orders, and khata records to the secure cloud?"
+        message="Do you want to sync all customers, orders, expenses and khata records to the secure cloud?"
         confirmText="Start Backup"
         onConfirm={() => {
           setBackupModalVisible(false);
-          setTimeout(() => Alert.alert('Success', 'Backup completed successfully!'), 300);
+          handleFullBackup();
         }}
         onCancel={() => setBackupModalVisible(false)}
       />
@@ -252,7 +326,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '800',
     color: '#FFFFFF',
-    letterSpacing: 1.5,
     marginTop: 2,
   },
   shareCodeBtn: {
@@ -261,51 +334,53 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 16,
+    borderRadius: 8,
+    gap: 4,
   },
   shareCodeBtnText: {
-    fontSize: 12,
-    fontWeight: '700',
     color: colors.primary,
-    marginLeft: 4,
+    fontWeight: '700',
+    fontSize: 12,
   },
   card: {
-    backgroundColor: colors.surface,
+    backgroundColor: '#FFFFFF',
     borderRadius: spacing.cardRadius,
     borderWidth: 1,
-    borderColor: colors.borderLight,
-    overflow: 'hidden',
+    borderColor: colors.border,
+    paddingVertical: 6,
+    marginBottom: 30,
   },
   itemRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: spacing.lg,
     paddingHorizontal: spacing.lg,
+    paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
+    borderBottomColor: '#F3F4F6',
   },
   itemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   iconBox: {
     width: 38,
     height: 38,
     borderRadius: 10,
-    backgroundColor: colors.primaryLight,
+    backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: spacing.md,
+    marginRight: 14,
   },
   itemTitle: {
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '600',
     color: colors.textPrimary,
   },
   itemSubtitle: {
     fontSize: 12,
-    color: colors.textMuted,
+    color: colors.textSecondary,
     marginTop: 2,
   },
 });

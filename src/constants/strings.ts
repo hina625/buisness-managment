@@ -132,6 +132,18 @@ const baseEn = {
   exportReports: 'Export Reports (PDF)',
   notifications: 'Notifications',
   aboutApp: 'About App',
+
+  // Daily Profit & Expenses
+  netProfit: 'Net Profit (Munafa)',
+  todayExpenses: "Today's Expenses",
+  addExpense: '+ Add Expense',
+  expenseTitle: 'Expense Title',
+  expenseCategory: 'Category',
+  offlineMode: 'Offline Mode (Local Storage)',
+  onlineMode: 'Online (Cloud Connected)',
+  exportCSV: 'Export CSV (Excel)',
+  fullBackup: 'Full Business Backup (JSON)',
+  restoreBackup: 'Restore Business Data',
 };
 
 const baseUr: typeof baseEn = {
@@ -237,6 +249,16 @@ const baseUr: typeof baseEn = {
   exportReports: 'رپورٹ پی ڈی ایف میں نکالیں',
   notifications: 'اطلاعات',
   aboutApp: 'ایپ کے بارے میں',
+  netProfit: 'خالص منافع (منافع)',
+  todayExpenses: 'آج کے اخراجات',
+  addExpense: '+ خرچہ درج کریں',
+  expenseTitle: 'خرچے کا عنوان',
+  expenseCategory: 'خرچے کی قسم',
+  offlineMode: 'آف لائن موڈ (محفوظ)',
+  onlineMode: 'آن لائن (ہم آہنگ)',
+  exportCSV: 'ایکسل / سی ایس وی ایکسپورٹ',
+  fullBackup: 'مکمل بیک اپ (JSON)',
+  restoreBackup: 'ڈیٹا بحال کریں',
 };
 
 const baseSd: typeof baseEn = {

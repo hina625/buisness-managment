@@ -7,6 +7,7 @@ import { StatusBadge } from '../../components/StatusBadge';
 import { CustomButton } from '../../components/CustomButton';
 import { Order } from '../../types';
 import { generateOrderInvoicePDF } from '../../utils/pdfGenerator';
+import { sendWhatsAppReceipt } from '../../utils/whatsappReceipt';
 
 export const OrderDetailScreen = ({ route, navigation }: { route: any; navigation: any }) => {
   const { order }: { order: Order } = route.params;
@@ -22,24 +23,7 @@ export const OrderDetailScreen = ({ route, navigation }: { route: any; navigatio
   };
 
   const handleShareReceipt = async () => {
-    const receiptText = `*${businessProfile?.name || 'Business'} - Receipt*\n` +
-      `Order: ${currentOrder.orderNumber}\n` +
-      `Customer: ${currentOrder.customerName}\n` +
-      `Phone: ${currentOrder.customerPhone}\n\n` +
-      `Items:\n` +
-      currentOrder.items.map((i) => `• ${i.name} x ${i.quantity} = Rs. ${i.price * i.quantity}`).join('\n') +
-      `\n\nDelivery: Rs. ${currentOrder.deliveryCharges}\n` +
-      `*Total: Rs. ${currentOrder.totalAmount}*\n` +
-      `Status: ${currentOrder.status}\n\n` +
-      `Thank you for your business!`;
-
-    try {
-      await Share.share({
-        message: receiptText,
-      });
-    } catch (error) {
-      console.log('Share error', error);
-    }
+    await sendWhatsAppReceipt(currentOrder, businessProfile);
   };
 
   const handlePrintPDF = async () => {

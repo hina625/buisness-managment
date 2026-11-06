@@ -143,7 +143,7 @@ export const DashboardScreen = ({ navigation }: { navigation: any }) => {
         {/* Orders list snippet */}
         {orders.length === 0 ? (
           <View style={{ paddingVertical: 24, alignItems: 'center' }}>
-            <Ionicons name="receipt-outline" size={36} color={THEME.colors.textLight} />
+            <Ionicons name="receipt-outline" size={36} color={THEME.colors.textMuted} />
             <Text style={{ marginTop: 8, color: THEME.colors.textSecondary, fontSize: 14 }}>
               No orders yet. Tap "+ Add Order" to create one.
             </Text>

@@ -178,7 +178,7 @@ export const WhatsAppSyncScreen = ({ navigation }) => {
             <Ionicons name="flash-outline" size={24} color="#059669" />
             <View style={{ marginLeft: 12 }}>
               <Text style={styles.simTitle}>Simulate Incoming WhatsApp Order</Text>
-              <Text style={styles.simSub}>Triggers automated Webhook -> Creates Order instantly</Text>
+              <Text style={styles.simSub}>Triggers automated Webhook → Creates Order instantly</Text>
             </View>
           </View>
           <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />

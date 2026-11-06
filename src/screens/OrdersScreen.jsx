@@ -8,9 +8,10 @@ import { SearchBar } from '../components/SearchBar';
 import { OrderCard } from '../components/OrderCard';
 import { EmptyState } from '../components/EmptyState';
 import { useApp } from '../context/AppContext';
+import { sendWhatsAppReceipt } from '../utils/whatsappReceipt';
 
 export const OrdersScreen = ({ navigation }) => {
-  const { strings, orders } = useApp();
+  const { strings, orders, businessProfile } = useApp();
   const [search, setSearch] = useState('');
   const [activeTab, setActiveTab] = useState('All');
 
@@ -77,6 +78,7 @@ export const OrdersScreen = ({ navigation }) => {
             <OrderCard
               order={item}
               onPress={() => navigation.navigate('OrderDetail', { order: item })}
+              onWhatsAppPress={(ord) => sendWhatsAppReceipt(ord, businessProfile)}
             />
           )}
           showsVerticalScrollIndicator={false}

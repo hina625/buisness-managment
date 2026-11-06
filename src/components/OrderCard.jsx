@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { StatusBadge } from './StatusBadge';
 
-export const OrderCard = ({ order, onPress }) => {
+export const OrderCard = ({ order, onPress, onWhatsAppPress }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
@@ -21,7 +22,20 @@ export const OrderCard = ({ order, onPress }) => {
 
       <View style={styles.footer}>
         <Text style={styles.date}>{order.date}</Text>
-        <Text style={styles.amount}>Rs. {order.totalAmount.toLocaleString()}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={styles.amount}>Rs. {order.totalAmount.toLocaleString()}</Text>
+          {onWhatsAppPress && (
+            <TouchableOpacity
+              onPress={(e) => {
+                e.stopPropagation?.();
+                onWhatsAppPress(order);
+              }}
+              style={styles.waCardBtn}
+            >
+              <Ionicons name="logo-whatsapp" size={16} color="#FFFFFF" />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -70,5 +84,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '800',
     color: colors.textPrimary,
+  },
+  waCardBtn: {
+    backgroundColor: '#25D366',
+    borderRadius: 14,
+    padding: 6,
+    marginLeft: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

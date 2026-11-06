@@ -73,3 +73,13 @@ export interface Payment {
   date: string;
   orderId?: string;
 }
+
+export interface Expense {
+  id: string;
+  title: string;
+  amount: number;
+  category: string;
+  date: string;
+  notes?: string;
+  businessId?: string;
+}

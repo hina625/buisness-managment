@@ -1,10 +1,30 @@
 import { Platform } from 'react-native';
 
-// Central API Client for connecting React Native app with PostgreSQL Backend
-const BASE_URL = Platform.select({
-  android: 'http://10.0.2.2:5000/api/v1',
-  default: 'http://localhost:5000/api/v1',
-});
+// Auto-detect PC IP address for physical phone, emulator and web
+const getBaseUrl = () => {
+  if (Platform.OS === 'web') {
+    return 'http://localhost:5000/api/v1';
+  }
+
+  try {
+    // Dynamic import to avoid strict typescript missing module compile errors
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const Constants = require('expo-constants')?.default || require('expo-constants');
+    const hostUri = Constants?.expoConfig?.hostUri || Constants?.manifest2?.extra?.expoClient?.hostUri;
+    if (hostUri) {
+      const ip = hostUri.split(':')[0];
+      return `http://${ip}:5000/api/v1`;
+    }
+  } catch {
+    // fallback
+  }
+
+  // Fallback to PC Wi-Fi local network IP
+  return 'http://192.168.10.138:5000/api/v1';
+};
+
+const BASE_URL = getBaseUrl();
+console.log('[API URL Configured]:', BASE_URL);
 
 export const apiClient = {
   async get(endpoint: string, token?: string) {
@@ -108,4 +128,22 @@ export const productsService = {
     apiClient.get(`/products${search ? `?search=${search}` : ''}`),
   addProduct: (name: string, price: number, stock: number) =>
     apiClient.post('/products', { name, price, stock }),
+};
+
+export const expensesService = {
+  getExpenses: () =>
+    apiClient.get('/expenses'),
+  createExpense: (data: { title: string; amount: number; category: string; notes?: string; businessId?: string }) =>
+    apiClient.post('/expenses', data),
+  getProfitSummary: () =>
+    apiClient.get('/expenses/summary'),
+};
+
+export const backupService = {
+  exportBackup: () =>
+    apiClient.get('/backup/export'),
+  exportCSV: (type: 'customers' | 'orders' | 'payments') =>
+    apiClient.get(`/backup/csv?type=${type}`),
+  restoreBackup: (backupData: any) =>
+    apiClient.post('/backup/restore', backupData),
 };
